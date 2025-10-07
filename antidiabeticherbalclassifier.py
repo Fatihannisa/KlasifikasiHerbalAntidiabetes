@@ -46,7 +46,7 @@ st.markdown("""
     }
     .upload-box {
         border: 2px dashed #A5D6A7;
-        border-radius: 15 px;
+        border-radius: 15px;
         padding: 1.5rem;
         text-align: center;
         color: #388E3C;
@@ -73,7 +73,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-continer">', unsafe_allow_html=True)
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
 st.markdown('<div class="title">🌿 Klasifikasi Tanaman Herbal Antidiabetes</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Upload citra daun untuk mengidentifikasi jenis tanaman herbal</div>', unsafe_allow_html=True)
 
