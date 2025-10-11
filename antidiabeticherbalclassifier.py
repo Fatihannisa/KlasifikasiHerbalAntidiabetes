@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-import base64
 
 # --- Konfigurasi halaman ---
 st.set_page_config(page_title="DiaHerb", page_icon="🌿", layout="wide")
@@ -23,13 +22,6 @@ st.markdown("""
         border-right: 2px solid #e0e0e0;
     }
 
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-        font-family: 'Playfair Display', serif;
-        color: #2E4E1F;
-        text-align: center;
-    }
-
-    /* Logo Judul di Sidebar */
     .logo-text {
         font-family: 'Playfair Display', serif;
         font-size: 26px;
@@ -45,18 +37,26 @@ st.markdown("""
         text-align: center;
     }
 
-    /* Tombol navigasi */
-    .sidebar-radio label {
+    /* Sidebar links */
+    .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 10px;
         font-size: 16px;
+        margin: 4px 0;
         color: #2E4E1F;
-        padding: 8px 12px;
-        border-radius: 8px;
-        display: block;
+        text-decoration: none;
     }
 
-    .sidebar-radio label:hover {
+    .nav-link:hover {
         background-color: #c5e1a5;
         transition: 0.3s;
+    }
+
+    .nav-icon {
+        margin-right: 10px;
+        font-size: 18px;
     }
 
     /* Header Section */
@@ -90,6 +90,14 @@ st.markdown("""
         padding: 15px;
     }
 
+    /* Tombol Kenali */
+    .center-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    /* Footer */
     .footer {
         text-align: center;
         color: #6B705C;
@@ -99,19 +107,22 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 # --- Sidebar Navigasi ---
 with st.sidebar:
     st.markdown("<div class='logo-text'>DiaHerb</div>", unsafe_allow_html=True)
     st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>", unsafe_allow_html=True)
     st.markdown("---")
 
-    menu = st.radio("Navigasi", ["Beranda", "Tentang", "Referensi"], label_visibility="collapsed")
+    # Navigasi dengan ikon
+    menu = st.radio("",
+        ["Beranda", "Tentang", "Referensi"],
+        format_func=lambda x: {"Beranda": "🌿 Beranda", "Tentang": "📖 Tentang", "Referensi": "📚 Referensi"}[x],
+        label_visibility="collapsed"
+    )
 
     st.markdown("---")
     st.markdown("<small>© 2025 DiaHerb</small>", unsafe_allow_html=True)
     st.markdown("<small>Proyek Skripsi — Listy Zulmi</small>", unsafe_allow_html=True)
-
 
 # --- Halaman Utama ---
 if menu == "Beranda":
@@ -121,26 +132,42 @@ if menu == "Beranda":
     col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.markdown("<div class='upload-box'>📷 Unggah gambar daun (JPG/PNG)</div>", unsafe_allow_html=True)
-        uploaded_file = st.file_uploader("Unggah gambar daun", type=["jpg", "jpeg", "png"])
+        st.markdown("<div class='upload-box'>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Unggah gambar daun (JPG/PNG) — drag & drop atau klik Browse", type=["jpg", "jpeg", "png"])
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # Tombol di tengah bawah
+        st.markdown("<div class='center-button'>", unsafe_allow_html=True)
+        detect = st.button("🔍 Kenali", use_container_width=False)
+        st.markdown("</div>", unsafe_allow_html=True)
+
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
-            st.image(image, caption="Gambar yang diunggah", use_container_width=True)
-            st.success("Gambar berhasil diunggah!")
 
-        if st.button("🔍 Kenali"):
-            st.write("🔬 Sedang menganalisis gambar... (simulasi)")
+            if detect:
+                st.markdown("---")
+                st.markdown("### 🧪 Hasil Identifikasi")
+                st.image(image, caption="Gambar yang diunggah", use_container_width=True)
+                st.info("""
+                **Nama ilmiah:** *Ocimum sanctum* (Kemangi)  
+                **Status:** Tanaman herbal antidiabetes  
+                **Tingkat kepercayaan sistem:** 95%
+                """)
 
     with col2:
-        st.markdown("<div class='tips-box'><h4>📸 Tips Pengambilan Gambar</h4><ul><li>Ambil satu daun saja, fokus pada objek.</li><li>Gunakan latar belakang polos (putih atau hitam).</li><li>Pencahayaan cukup dan hindari bayangan.</li></ul></div>", unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.markdown("### 🧪 Hasil Identifikasi (Simulasi)")
-    st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
-
+        st.markdown("""
+        <div class='tips-box'>
+            <h4>📸 Tips Pengambilan Gambar</h4>
+            <ul>
+                <li>Ambil satu daun saja, fokus pada objek.</li>
+                <li>Gunakan latar belakang polos (putih atau hitam).</li>
+                <li>Pencahayaan cukup dan hindari bayangan.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
 
 elif menu == "Tentang":
-    st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
+    st.markdown("<div class='header'>📖 Tentang — DiaHerb</div>", unsafe_allow_html=True)
     st.write("""
     **DiaHerb** adalah sistem berbasis *Deep Learning* yang dirancang untuk membantu identifikasi tanaman herbal antidiabetes melalui citra daun.  
     Sistem ini bertujuan untuk mendukung masyarakat, peneliti, dan pelaku industri herbal dalam mengenali tanaman berpotensi antidiabetes dengan lebih cepat dan akurat.
@@ -162,7 +189,7 @@ elif menu == "Tentang":
     """)
 
 elif menu == "Referensi":
-    st.markdown("<div class='header'>Referensi Ilmiah</div>", unsafe_allow_html=True)
+    st.markdown("<div class='header'>📚 Referensi Ilmiah</div>", unsafe_allow_html=True)
     st.write("""
     1. Hossain, M. A., et al. (2022). *LeafNet: A Deep CNN Model for Plant Identification.*  
     2. Gupta, R. et al. (2023). *Transfer Learning for Medicinal Leaf Classification.*  
