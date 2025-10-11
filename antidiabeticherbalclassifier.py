@@ -178,9 +178,11 @@ if menu == "🌿 Beranda":
 
     st.markdown("---")
     st.markdown("### 🧪 Hasil Identifikasi (Simulasi)")
-    st.image(image, caption="Citra hasil identifikasi", use_container_width=True)
-    st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
-
+    if 'image' in locals():
+        st.image(image, caption="Citra hasil identifikasi", use_container_width=True)
+        st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
+    else:
+        st.warning("Belum ada gambar yang diunggah untuk diidentifikasi.")
 
 elif menu == "ℹ️ Tentang":
     st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
