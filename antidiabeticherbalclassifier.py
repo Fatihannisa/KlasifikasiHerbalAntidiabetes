@@ -12,7 +12,7 @@ st.markdown("""
 
     html, body, [class*="css"] {
         font-family: 'Poppins', sans-serif;
-        background-color: #FAFAF8;
+        background-color: #d6ffba;
     }
 
     /* Sidebar */
@@ -55,7 +55,7 @@ st.markdown("""
     }
 
     .sidebar-radio label:hover {
-        background-color: #c5e1a5;
+        background-color: #dfffba;
         transition: 0.3s;
     }
 
@@ -83,9 +83,23 @@ st.markdown("""
         border-color: #6b8e23;
     }
 
+    div.stButton > button {
+        display: block;
+        margin: 0 auto;
+        background-color: #8B5E3C;
+        color: white;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: all 0.2s ease;
+    }
+    div.stButton > button:hover {
+        background-color: #734b2f;
+        transform: scale(1.05);
+    }
+
     .tips-box {
-        background-color: #FFF9E6;
-        border-left: 4px solid #E6B800;
+        background-color: #f7f1e1;
+        border-left: 4px solid #a18d58;
         border-radius: 10px;
         padding: 15px;
     }
@@ -103,7 +117,6 @@ st.markdown("""
 # --- Sidebar Navigasi ---
 with st.sidebar:
     st.markdown("<div class='logo-text'>DiaHerb</div>", unsafe_allow_html=True)
-    st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>", unsafe_allow_html=True)
     st.markdown("---")
 
     menu = st.radio("Navigasi", ["Beranda", "Tentang", "Referensi"], label_visibility="collapsed")
@@ -115,21 +128,41 @@ with st.sidebar:
 
 # --- Halaman Utama ---
 if menu == "Beranda":
-    st.markdown("<div class='header'>🌿 Beranda — DiaHerb</div>", unsafe_allow_html=True)
+    st.markdown("<div class='header'>🌿DiaHerb</div>", unsafe_allow_html=True)
+    #st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>", unsafe_allow_html=True)
+    st.title("🌿 Sistem Klasifikasi Tanaman Herbal Antidiabetes Beberbasis Deep Learning")
     st.write("Unggah citra daun untuk mengidentifikasi apakah tanaman tersebut termasuk herbal antidiabetes.")
 
     col1, col2 = st.columns([2, 1])
 
     with col1:
         st.markdown("<div class='upload-box'>📷 Unggah gambar daun (JPG/PNG)</div>", unsafe_allow_html=True)
-        uploaded_file = st.file_uploader("Unggah gambar daun", type=["jpg", "jpeg", "png"])
-        if uploaded_file is not None:
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Gambar yang diunggah", use_container_width=True)
-            st.success("Gambar berhasil diunggah!")
+        uploaded_file = st.file_uploader(
+            "Unggah gambar daun (JPG / PNG) — drag & drop atau klik Browse",
+            type=["jpg", "png"],
+            label_visibility="collapsed"
+        )
+        
+        st.markdown("""
+        <div style="
+            border: 2px dashed #bcd9a5;
+            border-radius: 10px;
+            background-color: #f6f9f3;
+            padding: 20px;
+            text-align: center;
+            ">
+            <p style="color:#8B5E3C; font-weight:bold;">Unggah gambar daun (JPG / PNG)</p>
+            <p style="color:#666;">Drag & drop atau klik tombol di bawah</p>
+        </div>
+        """, unsafe_allow_html=True)
 
         if st.button("🔍 Kenali"):
-            st.write("🔬 Sedang menganalisis gambar... (simulasi)")
+            if uploaded_file is not None:
+                image = Image.open(uploaded_file)
+                st.write("🔬 Sedang menganalisis gambar... (simulasi)")
+                st.image(image, caption="Hasil gambar yang diunggah", use_column_width=True)
+            else:
+                st.warning("Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
 
     with col2:
         st.markdown("<div class='tips-box'><h4>📸 Tips Pengambilan Gambar</h4><ul><li>Ambil satu daun saja, fokus pada objek.</li><li>Gunakan latar belakang polos (putih atau hitam).</li><li>Pencahayaan cukup dan hindari bayangan.</li></ul></div>", unsafe_allow_html=True)
