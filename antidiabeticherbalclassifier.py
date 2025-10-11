@@ -70,38 +70,6 @@ st.markdown("""
         margin-bottom: 10px;
     }
 
-    /* Box konten */
-    .upload-box {
-        background-color: #F2F8EE;
-        border: 2px dashed #8DA77D;
-        border-radius: 12px;
-        padding: 40px;
-        text-align: center;
-        transition: 0.3s;
-    }
-
-    .upload-box:hover {
-        background-color: #E6F2E0;
-        border-color: #6b8e23;
-    }
-
-    /* Tombol custom upload di tengah */
-    .upload-btn {
-        background-color: #8B5E3C;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 8px;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .upload-btn:hover {
-        background-color: #734b2f;
-        transform: scale(1.05);
-    }
-
     /* Tombol kenali di tengah */
     div.stButton > button {
         display: block;
@@ -155,34 +123,32 @@ if menu == "🌿 Beranda":
     col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.markdown("<div class='upload-box'>📷 Unggah gambar daun (JPG/PNG)</div>", unsafe_allow_html=True)
-        uploaded_file = st.file_uploader(
-            "📷Unggah gambar daun (JPG / PNG)",
-            type=["jpg", "png"])
+        uploaded_file = st.file_uploader("📷 Unggah gambar daun (JPG / PNG)", type=["jpg", "png", "jpeg"])
         
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
             st.image(image, caption="Gambar yang diunggah", use_container_width=True)
-            st.success("Gambar berhasil diunggah!")
+            st.success("✅ Gambar berhasil diunggah!")
 
         if st.button("🔍 Kenali"):
             if uploaded_file is not None:
-                image = Image.open(uploaded_file)
-                st.write("🔬 Sedang menganalisis gambar... (simulasi)")
-                st.image(image, caption="Hasil gambar yang diunggah", use_column_width=True)
+                st.write("🔬 Sedang menganalisis gambar... *(simulasi)*")
+                st.image(image, caption="Citra hasil identifikasi", use_container_width=True)
+                st.info("**Nama ilmiah:** *Ocimum sanctum* (Kemangi)\n\n**Status:** Tanaman herbal antidiabetes\n\n**Tingkat kepercayaan sistem:** 95%")
             else:
-                st.warning("Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
+                st.warning("⚠️ Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
 
     with col2:
-        st.markdown("<div class='tips-box'><h4>📸 Tips Pengambilan Gambar</h4><ul><li>Ambil satu daun saja, fokus pada objek.</li><li>Gunakan latar belakang polos (putih atau hitam).</li><li>Pencahayaan cukup dan hindari bayangan.</li></ul></div>", unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.markdown("### 🧪 Hasil Identifikasi (Simulasi)")
-    if 'image' in locals():
-        st.image(image, caption="Citra hasil identifikasi", use_container_width=True)
-        st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
-    else:
-        st.warning("Belum ada gambar yang diunggah untuk diidentifikasi.")
+        st.markdown("""
+        <div class='tips-box'>
+        <h4>📸 Tips Pengambilan Gambar</h4>
+        <ul>
+            <li>Ambil satu daun saja, fokus pada objek.</li>
+            <li>Gunakan latar belakang polos (putih atau hitam).</li>
+            <li>Pencahayaan cukup dan hindari bayangan.</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
 
 elif menu == "ℹ️ Tentang":
     st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
