@@ -7,7 +7,7 @@ import time
 # -------------------------
 # Page config
 # -------------------------
-st.set_page_config(page_title="DiaHerb 🌿", page_icon="🌿", layout="wide")
+st.set_page_config(page_title="DiaHerb 🌿", page_icon="🌿", layout="wide", initial_sidebar_state="collapsed")
 
 # -------------------------
 # Theme colors (hijau-coklat herbal alami)
@@ -22,7 +22,37 @@ BG = "#FBF9F4"         # cream / natural bg
 # -------------------------
 st.markdown(
     f"""
+    st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+    .main-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 26px;
+        color: #2e7d32;  /* hijau herbal elegan */
+        letter-spacing: 0.5px;
+    }
+    .sub-title {
+        font-family: 'Poppins', sans-serif;
+        color: #5b5b5b;
+        font-size: 15px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:48px;height:48px;background:#e6f3e6;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            🌿
+        </div>
+        <div>
+            <div class="main-title">DiaHerb</div>
+            <div class="sub-title">Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
     /* Page background */
     .reportview-container, .main {{
         background-color: {BG};
