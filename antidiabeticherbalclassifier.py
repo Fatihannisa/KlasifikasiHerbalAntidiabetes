@@ -28,7 +28,7 @@ st.markdown(
     .main-title {
         font-family: 'Playfair Display', serif;
         font-weight: 700;
-        font-size: 26px;
+        #font-size: 26px;
         color: #2e7d32;
         letter-spacing: 0.5px;
     }
