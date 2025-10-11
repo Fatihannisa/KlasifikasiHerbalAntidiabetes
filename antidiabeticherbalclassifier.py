@@ -138,23 +138,12 @@ if menu == "Beranda":
     with col1:
         st.markdown("<div class='upload-box'>📷 Unggah gambar daun (JPG/PNG)</div>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader(
-            "Unggah gambar daun (JPG / PNG) — drag & drop atau klik Browse",
-            type=["jpg", "png"],
-            label_visibility="collapsed"
-        )
-        
-        st.markdown("""
-        <div style="
-            border: 2px dashed #bcd9a5;
-            border-radius: 10px;
-            background-color: #f6f9f3;
-            padding: 20px;
-            text-align: center;
-            ">
-            <p style="color:#8B5E3C; font-weight:bold;">Unggah gambar daun (JPG / PNG)</p>
-            <p style="color:#666;">Drag & drop atau klik tombol di bawah</p>
-        </div>
-        """, unsafe_allow_html=True)
+            "Unggah gambar daun (JPG / PNG)",
+            type=["jpg", "png"])
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Gambar yang diunggah", use_container_width=True)
+            st.success("Gambar berhasil diunggah!")
 
         if st.button("🔍 Kenali"):
             if uploaded_file is not None:
