@@ -107,7 +107,7 @@ with st.sidebar:
     st.markdown("<div class='logo-text'>DiaHerb</div>", unsafe_allow_html=True)
     st.markdown("---")
 
-    menu = st.radio("Navigasi", ["🌿 Beranda", "ℹ️ Tentang", "📚 Referensi"], label_visibility="collapsed")
+    menu = st.radio("Navigasi", ["🏠 Beranda", "ℹ️ Tentang", "📚 Referensi"], label_visibility="collapsed")
 
     st.markdown("---")
     st.markdown("<small>© 2025 DiaHerb</small>", unsafe_allow_html=True)
@@ -115,7 +115,7 @@ with st.sidebar:
 
 
 # --- Halaman Utama ---
-if menu == "🌿 Beranda":
+if menu == "🏠 Beranda":
     st.markdown("<div class='header'>🌿DiaHerb</div>", unsafe_allow_html=True)
     st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes Berbasis Deep Learning</div>", unsafe_allow_html=True)
     st.write("Unggah citra daun untuk mengidentifikasi apakah tanaman tersebut termasuk herbal antidiabetes.")
@@ -131,12 +131,15 @@ if menu == "🌿 Beranda":
             st.success("✅ Gambar berhasil diunggah!")
 
         if st.button("🔍 Kenali"):
-            if uploaded_file is not None:
-                st.write("🔬 Sedang menganalisis gambar... *(simulasi)*")
-                st.image(image, caption="Citra hasil identifikasi", use_container_width=True)
-                st.info("**Nama ilmiah:** *Ocimum sanctum* (Kemangi)\n\n**Status:** Tanaman herbal antidiabetes\n\n**Tingkat kepercayaan sistem:** 95%")
-            else:
-                st.warning("⚠️ Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
+        if "uploaded_image" in st.session_state:
+            with st.spinner("🔬 Sedang menganalisis gambar... (simulasi)"):
+                st.session_state["hasil_identifikasi"] = {
+                    "nama_tanaman": "Daun Sambiloto (Andrographis paniculata)",
+                    "kemungkinan": "98.3%",
+                    "kategori": "Herbal Antidiabetes"
+                }
+        else:
+            st.warning("Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
 
     with col2:
         st.markdown("""
@@ -150,10 +153,18 @@ if menu == "🌿 Beranda":
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("---") 
-        st.markdown("### 🧪 Hasil Identifikasi (Simulasi)") 
-        st.image(image, caption="Citra hasil identifikasi", use_container_width=True) 
-        st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
+        # Hasil identifikasi (tampil kalau sudah ada)
+    if "hasil_identifikasi" in st.session_state:
+        hasil = st.session_state["hasil_identifikasi"]
+        st.markdown("### 🌱 Hasil Identifikasi")
+        st.image(st.session_state["uploaded_image"], caption="Citra hasil identifikasi", use_container_width=True)
+        st.markdown(f"""
+        <div class="hasil-box">
+            <h4>Nama Tanaman: {hasil['nama_tanaman']}</h4>
+            <p><b>Kemungkinan:</b> {hasil['kemungkinan']}</p>
+            <p><b>Kategori:</b> {hasil['kategori']}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 elif menu == "ℹ️ Tentang":
     st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
