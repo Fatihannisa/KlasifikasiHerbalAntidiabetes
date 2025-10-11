@@ -44,7 +44,7 @@ st.markdown(
     st.markdown("""
     <div style="display:flex;align-items:center;gap:10px;">
         <div style="width:48px;height:48px;background:#e6f3e6;border-radius:10px;display:flex;align-items:center;justify-content:center;">
-            🌿
+            st.title("🌿 DiaHerb")
         </div>
         <div>
             <div class="main-title">DiaHerb</div>
