@@ -131,9 +131,9 @@ if menu == "🏠 Beranda":
             st.success("✅ Gambar berhasil diunggah!")
 
         if st.button("🔍 Kenali"):
-        if "uploaded_image" in st.session_state:
+        if "uploaded_file" in st.session_state:
             with st.spinner("🔬 Sedang menganalisis gambar... (simulasi)"):
-                st.session_state["hasil_identifikasi"] = {
+                st.image(st.session_state.uploaded_file) = {
                     "nama_tanaman": "Daun Sambiloto (Andrographis paniculata)",
                     "kemungkinan": "98.3%",
                     "kategori": "Herbal Antidiabetes"
