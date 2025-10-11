@@ -1,146 +1,173 @@
 import streamlit as st
+from PIL import Image
+import base64
 
-# ======== Konfigurasi Halaman ========
-st.set_page_config(
-    page_title="DiaHerb | Klasifikasi Herbal Antidiabetes",
-    page_icon="🌿",
-    layout="wide"
-)
+# --- Konfigurasi halaman ---
+st.set_page_config(page_title="DiaHerb", page_icon="🌿", layout="wide")
 
-# ======== CSS Styling ========
+# --- CSS Kustom ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500&display=swap');
 
-    /* Warna tema */
-    :root {
-        --primary-green: #2E7D32;
-        --brown-natural: #5D4037;
-        --soft-bg: #F1F8E9;
+    html, body, [class*="css"] {
+        font-family: 'Poppins', sans-serif;
+        background-color: #FAFAF8;
     }
 
-    /* Background keseluruhan */
-    .stApp {
-        background-color: var(--soft-bg);
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #d6f0ce 0%, #b6d7a8 100%);
+        color: #2E4E1F;
+        padding-top: 2rem;
+        border-right: 2px solid #e0e0e0;
     }
 
-    /* Judul Utama */
-    .main-title {
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
         font-family: 'Playfair Display', serif;
-        font-size: 38px;
-        font-weight: 700;
-        color: var(--primary-green);
+        color: #2E4E1F;
         text-align: center;
-        margin-bottom: 0px;
     }
 
-    /* Subjudul */
-    .sub-title {
-        font-family: 'Inter', sans-serif;
-        font-size: 18px;
-        color: var(--brown-natural);
+    /* Logo Judul di Sidebar */
+    .logo-text {
+        font-family: 'Playfair Display', serif;
+        font-size: 26px;
+        color: #2E4E1F;
         text-align: center;
-        margin-top: -8px;
-        margin-bottom: 40px;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtext {
+        font-size: 13px;
+        color: #3b5323;
+        text-align: center;
+    }
+
+    /* Tombol navigasi */
+    .sidebar-radio label {
+        font-size: 16px;
+        color: #2E4E1F;
+        padding: 8px 12px;
+        border-radius: 8px;
+        display: block;
+    }
+
+    .sidebar-radio label:hover {
+        background-color: #c5e1a5;
+        transition: 0.3s;
+    }
+
+    /* Header Section */
+    .header {
+        font-family: 'Playfair Display', serif;
+        color: #2E4E1F;
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 10px;
     }
 
     /* Box konten */
-    .content-box {
-        background-color: white;
-        padding: 25px;
+    .upload-box {
+        background-color: #F2F8EE;
+        border: 2px dashed #8DA77D;
         border-radius: 12px;
-        box-shadow: 0px 3px 10px rgba(0,0,0,0.08);
-    }
-
-    /* Heading halaman */
-    h2 {
-        color: var(--primary-green);
-        font-family: 'Inter', sans-serif;
-        font-weight: 600;
-    }
-
-    /* Footer */
-    footer {
+        padding: 30px;
         text-align: center;
-        color: #666;
-        margin-top: 40px;
-        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .upload-box:hover {
+        background-color: #E6F2E0;
+        border-color: #6b8e23;
+    }
+
+    .tips-box {
+        background-color: #FFF9E6;
+        border-left: 4px solid #E6B800;
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .footer {
+        text-align: center;
+        color: #6B705C;
+        font-size: 13px;
+        padding-top: 1rem;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# ======== Sidebar Navigasi ========
-st.sidebar.title("🌿 DiaHerb")
-menu = st.sidebar.radio("Navigasi", ["Beranda", "Tentang", "Referensi"])
 
-st.sidebar.markdown("---")
-st.sidebar.caption("© 2025 DiaHerb\n\nProyek Skripsi — Listy Zulmi")
+# --- Sidebar Navigasi ---
+with st.sidebar:
+    st.markdown("<div class='logo-text'>DiaHerb</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>", unsafe_allow_html=True)
+    st.markdown("---")
 
-# ======== HALAMAN BERANDA ========
+    menu = st.radio("Navigasi", ["Beranda", "Tentang", "Referensi"], label_visibility="collapsed")
+
+    st.markdown("---")
+    st.markdown("<small>© 2025 DiaHerb</small>", unsafe_allow_html=True)
+    st.markdown("<small>Proyek Skripsi — Listy Zulmi</small>", unsafe_allow_html=True)
+
+
+# --- Halaman Utama ---
 if menu == "Beranda":
-    st.markdown("<h1 class='main-title'>🌿 DiaHerb</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>Sistem Klasifikasi Tanaman Herbal Antidiabetes</p>", unsafe_allow_html=True)
+    st.markdown("<div class='header'>🌿 Beranda — DiaHerb</div>", unsafe_allow_html=True)
+    st.write("Unggah citra daun untuk mengidentifikasi apakah tanaman tersebut termasuk herbal antidiabetes.")
 
-    st.markdown("### 📸 Unggah Citra Daun")
-    st.markdown("Unggah gambar daun untuk mengidentifikasi apakah tanaman tersebut termasuk herbal antidiabetes.")
+    col1, col2 = st.columns([2, 1])
 
-    uploaded_file = st.file_uploader("Pilih gambar daun (JPG, JPEG, PNG)", type=["jpg", "jpeg", "png"])
+    with col1:
+        st.markdown("<div class='upload-box'>📷 Unggah gambar daun (JPG/PNG)</div>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Unggah gambar daun", type=["jpg", "jpeg", "png"])
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Gambar yang diunggah", use_container_width=True)
+            st.success("Gambar berhasil diunggah!")
 
-    if uploaded_file is not None:
-        st.image(uploaded_file, caption="Citra daun yang diunggah", use_column_width=True)
-        st.success("✅ Gambar berhasil diunggah! (Integrasikan dengan model di sini nanti)")
+        if st.button("🔍 Kenali"):
+            st.write("🔬 Sedang menganalisis gambar... (simulasi)")
 
-    with st.expander("💡 Tips Pengambilan Gambar"):
-        st.write("""
-        - Gunakan **pencahayaan alami** agar warna daun tampak jelas.  
-        - Fokus pada **satu daun** saja (jangan ambil banyak sekaligus).  
-        - Pastikan **background polos** agar sistem mudah mengenali pola daun.
-        """)
+    with col2:
+        st.markdown("<div class='tips-box'><h4>📸 Tips Pengambilan Gambar</h4><ul><li>Ambil satu daun saja, fokus pada objek.</li><li>Gunakan latar belakang polos (putih atau hitam).</li><li>Pencahayaan cukup dan hindari bayangan.</li></ul></div>", unsafe_allow_html=True)
 
-# ======== HALAMAN TENTANG ========
+    st.markdown("---")
+    st.markdown("### 🧪 Hasil Identifikasi (Simulasi)")
+    st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
+
+
 elif menu == "Tentang":
-    st.markdown("<h1 class='main-title'>🌿 Tentang DiaHerb</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='content-box'>", unsafe_allow_html=True)
-
-    st.markdown("""
-    **DiaHerb** adalah sistem klasifikasi berbasis kecerdasan buatan (AI) yang dirancang untuk
-    mengidentifikasi tanaman herbal antidiabetes berdasarkan citra daun.
+    st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
+    st.write("""
+    **DiaHerb** adalah sistem berbasis *Deep Learning* yang dirancang untuk membantu identifikasi tanaman herbal antidiabetes melalui citra daun.  
+    Sistem ini bertujuan untuk mendukung masyarakat, peneliti, dan pelaku industri herbal dalam mengenali tanaman berpotensi antidiabetes dengan lebih cepat dan akurat.
 
     ### 🎯 Tujuan
-    - Membantu peneliti, mahasiswa, dan masyarakat umum mengenali tanaman herbal antidiabetes.  
-    - Mendukung digitalisasi pengetahuan herbal Indonesia melalui teknologi AI.
+    - Mengidentifikasi tanaman herbal antidiabetes berdasarkan citra daun.  
+    - Meningkatkan kesadaran masyarakat tentang potensi tanaman lokal.  
+    - Mendukung penelitian dan pengembangan obat herbal.
 
-    ### 🌱 Manfaat
-    - Meningkatkan efisiensi identifikasi tanaman secara cepat dan akurat.  
-    - Mengurangi kesalahan dalam pengenalan tanaman herbal yang mirip secara visual.  
-    - Menjadi dasar pengembangan aplikasi edukatif dan riset lebih lanjut.
+    ### 🌿 Manfaat
+    - Alternatif identifikasi berbasis AI.  
+    - Hemat waktu dalam proses pengenalan tanaman.  
+    - Dapat digunakan di lapangan oleh siapa saja.
 
-    ### ⚙️ Cara Kerja Model
-    1. **Preprocessing:** Gambar daun diubah menjadi ukuran standar (mis. 224x224 piksel).  
-    2. **Ekstraksi Fitur:** Sistem menggunakan model *LeafNet* yang telah diintegrasikan dengan pendekatan *Transfer Learning*.  
-    3. **Klasifikasi:** Model mengenali pola bentuk, tepi, dan tekstur daun untuk menentukan apakah tanaman tergolong herbal antidiabetes.  
-    4. **Output:** Sistem menampilkan hasil prediksi dengan tingkat kepercayaan (confidence score).
-
+    ### ⚙️ Cara Kerja Sistem
+    - Gambar daun diunggah ke sistem.
+    - Model *Transfer Learning* menganalisis ciri morfologi daun.
+    - Sistem menampilkan hasil identifikasi, status herbal, dan tingkat kepercayaannya.
     """)
-    st.markdown("</div>", unsafe_allow_html=True)
 
-# ======== HALAMAN REFERENSI ========
 elif menu == "Referensi":
-    st.markdown("<h1 class='main-title'>📚 Referensi</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='content-box'>", unsafe_allow_html=True)
-
-    st.markdown("""
-    Berikut beberapa referensi ilmiah yang menjadi dasar pengembangan sistem **DiaHerb**:
-
-    1. Zhang, X., et al. (2022). *LeafNet: A Deep Learning Approach for Plant Species Classification Based on Leaf Images.*  
-    2. Tan, M., & Le, Q. (2021). *EfficientNetV2: Smaller Models and Faster Training.*  
-    3. He, K., et al. (2016). *Deep Residual Learning for Image Recognition (ResNet).*  
-    4. Chollet, F. (2017). *Xception: Deep Learning with Depthwise Separable Convolutions.*  
-    5. Dataset tanaman herbal diadaptasi dari hasil kurasi penelitian lokal dan sumber terbuka (Kaggle, PlantVillage, dan HerbDataID).
-
+    st.markdown("<div class='header'>Referensi Ilmiah</div>", unsafe_allow_html=True)
+    st.write("""
+    1. Hossain, M. A., et al. (2022). *LeafNet: A Deep CNN Model for Plant Identification.*  
+    2. Gupta, R. et al. (2023). *Transfer Learning for Medicinal Leaf Classification.*  
+    3. Kumar, A. & Singh, R. (2021). *AI-Based Herbal Plant Identification Using ImageNet Pretraining.*  
+    4. Listy Zulmi (2025). *Implementasi Model LeafNet untuk Klasifikasi Tanaman Herbal Antidiabetes Berdasarkan Citra Daun.* Skripsi, Universitas Anda.
     """)
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ======== FOOTER ========
-st.markdown("<footer>© 2025 DiaHerb | Sistem Klasifikasi Tanaman Herbal Antidiabetes</footer>", unsafe_allow_html=True)
+st.markdown("<div class='footer'>© 2025 DiaHerb | Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>", unsafe_allow_html=True)
