@@ -30,7 +30,7 @@ st.markdown(
         font-weight: 700;
         #font-size: 26px;
         color: #2e7d32;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.5 px;
     }
     .sub-title {
         font-family: 'Poppins', sans-serif;
