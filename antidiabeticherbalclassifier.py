@@ -147,7 +147,7 @@ with st.sidebar:
 
 
 # --- Halaman Utama ---
-if menu == "🌿Beranda":
+if menu == "🌿 Beranda":
     st.markdown("<div class='header'>🌿DiaHerb</div>", unsafe_allow_html=True)
     st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes Berbasis Deep Learning</div>", unsafe_allow_html=True)
     st.write("Unggah citra daun untuk mengidentifikasi apakah tanaman tersebut termasuk herbal antidiabetes.")
@@ -182,7 +182,7 @@ if menu == "🌿Beranda":
     st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
 
 
-elif menu == "Tentang":
+elif menu == "ℹ️ Tentang":
     st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
     st.write("""
     **DiaHerb** adalah sistem berbasis *Deep Learning* yang dirancang untuk membantu identifikasi tanaman herbal antidiabetes melalui citra daun.  
@@ -204,7 +204,7 @@ elif menu == "Tentang":
     - Sistem menampilkan hasil identifikasi, status herbal, dan tingkat kepercayaannya.
     """)
 
-elif menu == "Referensi":
+elif menu == "📚 Referensi":
     st.markdown("<div class='header'>Referensi Ilmiah</div>", unsafe_allow_html=True)
     st.write("""
     1. Hossain, M. A., et al. (2022). *LeafNet: A Deep CNN Model for Plant Identification.*  
