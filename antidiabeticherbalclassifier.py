@@ -28,14 +28,14 @@ st.markdown(
     .main-title {
         font-family: 'Playfair Display', serif;
         font-weight: 700;
-        #font-size: 26px;
+        font-size: 26 px;
         color: #2e7d32;
         letter-spacing: 0.5 px;
     }
     .sub-title {
         font-family: 'Poppins', sans-serif;
         color: #5b5b5b;
-        font-size: 15px;
+        font-size: 15 px;
     }
     </style>
 """, unsafe_allow_html=True)
