@@ -32,7 +32,7 @@ st.markdown("""
     /* Logo Judul di Sidebar */
     .logo-text {
         font-family: 'Playfair Display', serif;
-        font-size: 26px;
+        font-size: 30px;
         color: #2E4E1F;
         text-align: center;
         font-weight: bold;
@@ -40,9 +40,9 @@ st.markdown("""
     }
 
     .subtext {
-        font-size: 13px;
+        font-size: 16px;
         color: #3b5323;
-        text-align: center;
+        text-align: left;
     }
 
     /* Tombol navigasi */
@@ -51,7 +51,9 @@ st.markdown("""
         color: #2E4E1F;
         padding: 8px 12px;
         border-radius: 8px;
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .sidebar-radio label:hover {
@@ -63,7 +65,7 @@ st.markdown("""
     .header {
         font-family: 'Playfair Display', serif;
         color: #2E4E1F;
-        font-size: 32px;
+        font-size: 60px;
         font-weight: bold;
         margin-bottom: 10px;
     }
@@ -73,7 +75,7 @@ st.markdown("""
         background-color: #F2F8EE;
         border: 2px dashed #8DA77D;
         border-radius: 12px;
-        padding: 30px;
+        padding: 40px;
         text-align: center;
         transition: 0.3s;
     }
@@ -83,6 +85,24 @@ st.markdown("""
         border-color: #6b8e23;
     }
 
+    /* Tombol custom upload di tengah */
+    .upload-btn {
+        background-color: #8B5E3C;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .upload-btn:hover {
+        background-color: #734b2f;
+        transform: scale(1.05);
+    }
+
+    /* Tombol kenali di tengah */
     div.stButton > button {
         display: block;
         margin: 0 auto;
@@ -93,7 +113,7 @@ st.markdown("""
         transition: all 0.2s ease;
     }
     div.stButton > button:hover {
-        background-color: #734b2f;
+        background-color: #bfe8a0;
         transform: scale(1.05);
     }
 
@@ -119,7 +139,7 @@ with st.sidebar:
     st.markdown("<div class='logo-text'>DiaHerb</div>", unsafe_allow_html=True)
     st.markdown("---")
 
-    menu = st.radio("Navigasi", ["Beranda", "Tentang", "Referensi"], label_visibility="collapsed")
+    menu = st.radio("Navigasi", ["🌿 Beranda", "ℹ️ Tentang", "📚 Referensi"], label_visibility="collapsed")
 
     st.markdown("---")
     st.markdown("<small>© 2025 DiaHerb</small>", unsafe_allow_html=True)
@@ -127,10 +147,9 @@ with st.sidebar:
 
 
 # --- Halaman Utama ---
-if menu == "Beranda":
+if menu == "🌿Beranda":
     st.markdown("<div class='header'>🌿DiaHerb</div>", unsafe_allow_html=True)
-    #st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>", unsafe_allow_html=True)
-    st.title("🌿 Sistem Klasifikasi Tanaman Herbal Antidiabetes Beberbasis Deep Learning")
+    st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes Berbasis Deep Learning</div>", unsafe_allow_html=True)
     st.write("Unggah citra daun untuk mengidentifikasi apakah tanaman tersebut termasuk herbal antidiabetes.")
 
     col1, col2 = st.columns([2, 1])
@@ -138,8 +157,9 @@ if menu == "Beranda":
     with col1:
         st.markdown("<div class='upload-box'>📷 Unggah gambar daun (JPG/PNG)</div>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader(
-            "Unggah gambar daun (JPG / PNG)",
+            "📷Unggah gambar daun (JPG / PNG)",
             type=["jpg", "png"])
+        
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
             st.image(image, caption="Gambar yang diunggah", use_container_width=True)
@@ -158,6 +178,7 @@ if menu == "Beranda":
 
     st.markdown("---")
     st.markdown("### 🧪 Hasil Identifikasi (Simulasi)")
+    st.image(image, caption="Citra hasil identifikasi", use_container_width=True)
     st.info("Nama ilmiah: *Ocimum sanctum* (Kemangi)\n\nStatus: Tanaman herbal antidiabetes\n\nTingkat kepercayaan sistem: **95%**")
 
 
