@@ -25,12 +25,11 @@ st.markdown(
     st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
-
     .main-title {
         font-family: 'Playfair Display', serif;
         font-weight: 700;
         font-size: 26px;
-        color: #2e7d32;  /* hijau herbal elegan */
+        color: #2e7d32;
         letter-spacing: 0.5px;
     }
     .sub-title {
@@ -39,7 +38,8 @@ st.markdown(
         font-size: 15px;
     }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
 
     st.markdown("""
     <div style="display:flex;align-items:center;gap:10px;">
