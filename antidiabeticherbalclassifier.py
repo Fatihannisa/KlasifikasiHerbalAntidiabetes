@@ -131,11 +131,11 @@ def set_page(p):
 # -------------------------
 # Top navbar (visible on desktop)
 # -------------------------
-logo_html = """
+logo_html = f"""
 <div class="top-nav">
   <div class="brand">
     <div style="width:44px;height:44px;border-radius:8px;background:#f0f6f0;display:flex;align-items:center;justify-content:center;">
-      <span style="font-size:20px;color:{c};">🌿</span>
+      <span style="font-size:20px;color:{PRIMARY};">🌿</span>
     </div>
     <div>
       <div class="title">DiaHerb</div>
@@ -144,13 +144,13 @@ logo_html = """
   </div>
   <div class="nav-buttons">
     <form action="">
-      <button formaction="#" onclick="window.parent.postMessage({isNav:true, page:'Beranda'}, '*')">Beranda</button>
-      <button formaction="#" onclick="window.parent.postMessage({isNav:true, page:'Tentang'}, '*')">Tentang</button>
-      <button formaction="#" onclick="window.parent.postMessage({isNav:true, page:'Referensi'}, '*')">Referensi</button>
+      <button formaction="#" onclick="window.parent.postMessage({{isNav:true, page:'Beranda'}}, '*')">Beranda</button>
+      <button formaction="#" onclick="window.parent.postMessage({{isNav:true, page:'Tentang'}}, '*')">Tentang</button>
+      <button formaction="#" onclick="window.parent.postMessage({{isNav:true, page:'Referensi'}}, '*')">Referensi</button>
     </form>
   </div>
 </div>
-""".format(c=PRIMARY)
+"""
 
 # Render top navbar HTML. It will send a postMessage when clicked.
 st.components.v1.html(logo_html, height=90, scrolling=False)
