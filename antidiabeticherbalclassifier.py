@@ -131,15 +131,15 @@ if menu == "🏠 Beranda":
             st.success("✅ Gambar berhasil diunggah!")
 
         if st.button("🔍 Kenali"):
-        if "uploaded_file" in st.session_state:
-            with st.spinner("🔬 Sedang menganalisis gambar... (simulasi)"):
-                st.image(st.session_state.uploaded_file) = {
-                    "nama_tanaman": "Daun Sambiloto (Andrographis paniculata)",
-                    "kemungkinan": "98.3%",
-                    "kategori": "Herbal Antidiabetes"
-                }
-        else:
-            st.warning("Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
+            if "uploaded_file" in st.session_state:
+                with st.spinner("🔬 Sedang menganalisis gambar... (simulasi)"):
+                    st.image(st.session_state.uploaded_file) = {
+                        "nama_tanaman": "Daun Sambiloto (Andrographis paniculata)",
+                        "kemungkinan": "98.3%",
+                        "kategori": "Herbal Antidiabetes"
+                    }
+            else:
+                st.warning("Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
 
     with col2:
         st.markdown("""
