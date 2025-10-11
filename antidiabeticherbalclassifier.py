@@ -154,17 +154,17 @@ if menu == "🏠 Beranda":
         """, unsafe_allow_html=True)
         
         # Hasil identifikasi (tampil kalau sudah ada)
-    if "hasil_identifikasi" in st.session_state:
-        hasil = st.session_state["hasil_identifikasi"]
-        st.markdown("### 🌱 Hasil Identifikasi")
-        st.image(st.session_state["uploaded_image"], caption="Citra hasil identifikasi", use_container_width=True)
-        st.markdown(f"""
-        <div class="hasil-box">
-            <h4>Nama Tanaman: {hasil['nama_tanaman']}</h4>
-            <p><b>Kemungkinan:</b> {hasil['kemungkinan']}</p>
-            <p><b>Kategori:</b> {hasil['kategori']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+        if "uploaded_image" in st.session_state:
+            hasil = st.session_state["uploaded_image"]
+            st.markdown("### 🌱 Hasil Identifikasi")
+            st.image(st.session_state["uploaded_image"], caption="Citra hasil identifikasi", use_container_width=True)
+            st.markdown(f"""
+            <div class="hasil-box">
+                <h4>Nama Tanaman: {hasil['nama_tanaman']}</h4>
+                <p><b>Kemungkinan:</b> {hasil['kemungkinan']}</p>
+                <p><b>Kategori:</b> {hasil['kategori']}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
 elif menu == "ℹ️ Tentang":
     st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
