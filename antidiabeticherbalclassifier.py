@@ -1,113 +1,122 @@
 import streamlit as st
+import numpy as np
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from PIL import Image
 
-# ==============================
-# KONFIGURASI DASAR HALAMAN
-# ==============================
-st.set_page_config(
-    page_title="Klasifikasi Tanaman Herbal Antidiabetes",
-    layout="wide",
-    page_icon="🌿"
-)
+# ====================================
+# KONFIGURASI AWAL
+# ====================================
+st.set_page_config(page_title="Klasifikasi Tanaman Herbal Antidiabetes", layout="centered")
 
-# ==============================
-# HEADER / JUDUL WEBSITE
-# ==============================
-st.markdown("<h1 style='text-align:center;'>🌿 Sistem Klasifikasi Tanaman Herbal Antidiabetes 🌿</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Mengidentifikasi jenis tanaman herbal berdasarkan citra daun menggunakan teknologi kecerdasan buatan.</p>", unsafe_allow_html=True)
+# Muat model
+@st.cache_resource
+def load_herbal_model():
+    model = load_model("model_herbal_antidiabetes.h5")  # ganti dengan nama file kamu
+    return model
 
-st.markdown("---")
+model = load_herbal_model()
 
-# ==============================
-# NAVIGASI TAB
-# ==============================
-tab1, tab2, tab3 = st.tabs(["📘 Deskripsi", "🪴 Petunjuk", "📷 Unggah Gambar"])
+# Label kelas
+CLASS_NAMES = [
+    "Daun Sirsak", "Daun Salam", "Daun Pegagan", "Daun Jati Belanda",
+    "Daun Sirih", "Daun Kemangi", "Daun Insulin", "Daun Kelor",
+    "Daun Mangga", "Daun Belimbing Wuluh", "Daun Afrika", "Daun Brotowali",
+    "Daun Tapak Dara", "Daun Katuk", "Daun Dewa", "Daun Mengkudu",
+    "Daun Pandan", "Daun Tempuyung", "Daun Lidah Buaya", "Daun Seledri"
+]
 
-# ==============================
-# TAB 1: DESKRIPSI
-# ==============================
+# ====================================
+# HEADER
+# ====================================
+st.markdown("## 🌿 Klasifikasi Tanaman Herbal Antidiabetes")
+st.markdown("Sistem deteksi tanaman herbal berbasis citra daun menggunakan model **LeafNet dengan Transfer Learning**.")
+
+st.divider()
+
+# ====================================
+# TAB NAVIGASI
+# ====================================
+tab1, tab2, tab3 = st.tabs(["🧾 Deskripsi", "📘 Petunjuk", "📷 Unggah Gambar"])
+
+# =========================
+# TAB 1 – DESKRIPSI SISTEM
+# =========================
 with tab1:
     st.subheader("Deskripsi Sistem")
     st.write("""
-    Sistem ini dikembangkan untuk membantu pengguna mengenali tanaman herbal antidiabetes melalui citra daun.
-    Dengan memanfaatkan model *Transfer Learning* dan arsitektur *LeafNet*, sistem dapat mengklasifikasikan
-    citra daun dan menampilkan informasi tambahan mengenai tanaman yang terdeteksi.
+    Sistem ini digunakan untuk mengidentifikasi jenis tanaman herbal antidiabetes berdasarkan citra daun.
+    Model dilatih menggunakan pendekatan **Transfer Learning** dengan arsitektur khusus **LeafNet**.
     """)
 
-    st.markdown("### Tujuan")
-    st.write("- Mempermudah identifikasi tanaman herbal antidiabetes secara cepat dan akurat.")
-    st.write("- Menyediakan informasi ilmiah dan edukatif bagi pengguna.")
-
-    st.markdown("### Manfaat")
-    st.write("- Mendukung penelitian dan konservasi tanaman herbal lokal.")
-    st.write("- Memberikan panduan pengenalan herbal untuk masyarakat umum dan praktisi kesehatan alami.")
-
-# ==============================
-# TAB 2: PETUNJUK
-# ==============================
+# =========================
+# TAB 2 – PETUNJUK
+# =========================
 with tab2:
     st.subheader("Petunjuk Penggunaan")
+    st.write("1️⃣ Unggah gambar daun herbal (format JPG/PNG).")  
+    st.write("2️⃣ Tekan tombol **Identifikasi**.")  
+    st.write("3️⃣ Hasil klasifikasi dan tingkat kepercayaan sistem akan muncul di bawah.")  
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.image("https://cdn-icons-png.flaticon.com/512/685/685655.png", width=80)
-        st.caption("1️⃣ Unggah gambar daun tanaman")
+    st.info("""
+    **Tips Pengambilan Gambar:**
+    - Pastikan daun berada di latar belakang polos.
+    - Hindari bayangan atau cahaya berlebih.
+    - Fokuskan kamera pada daun secara keseluruhan.
+    """)
 
-    with col2:
-        st.image("https://cdn-icons-png.flaticon.com/512/992/992651.png", width=80)
-        st.caption("2️⃣ Tekan tombol **Identifikasi**")
-
-    with col3:
-        st.image("https://cdn-icons-png.flaticon.com/512/3131/3131636.png", width=80)
-        st.caption("3️⃣ Lihat hasil klasifikasi dan informasi tanaman")
-
-# ==============================
-# TAB 3: UNGGAH GAMBAR & HASIL
-# ==============================
+# =========================
+# TAB 3 – UNGGAH & HASIL
+# =========================
 with tab3:
-    st.subheader("Unggah Gambar Daun Anda")
+    st.subheader("Unggah Gambar")
+    uploaded_file = st.file_uploader("Unggah gambar daun (JPG/PNG)", type=["jpg", "jpeg", "png"])
 
-    col1, col2 = st.columns([1.5, 1])
-    with col1:
-        uploaded_file = st.file_uploader("Unggah gambar daun (JPG/PNG)", type=["jpg", "png"])
-        if uploaded_file is not None:
-            st.image(uploaded_file, caption="Citra daun yang diunggah", use_column_width=True)
+    if uploaded_file is not None:
+        image_data = Image.open(uploaded_file).convert("RGB")
+        st.image(image_data, caption="Gambar yang diunggah", use_container_width=True)
 
-        # Tombol Identifikasi
-        if st.button("🔍 Identifikasi", use_container_width=True):
-            st.info("Model sedang memproses gambar...")
+        if st.button("🔍 Identifikasi"):
+            with st.spinner("Sedang menganalisis gambar..."):
+                # Preprocessing gambar
+                img = image_data.resize((224, 224))
+                img_array = image.img_to_array(img)
+                img_array = np.expand_dims(img_array, axis=0)
+                img_array /= 255.0
 
-            # === Proses klasifikasi model di sini ===
-            # contoh dummy output:
-            st.success("✅ Tanaman teridentifikasi: *Orthosiphon aristatus* (Kumis Kucing)")
-            st.write("**Status:** Herbal Antidiabetes")
-            st.write("**Tingkat kepercayaan sistem:** 94.3%")
+                # Prediksi
+                predictions = model.predict(img_array)
+                class_index = np.argmax(predictions[0])
+                confidence = predictions[0][class_index] * 100
+                predicted_label = CLASS_NAMES[class_index]
 
-            with st.expander("Informasi Tambahan"):
-                st.markdown("""
-                - Tanaman ini dikenal sebagai *Kumis Kucing*.
-                - Memiliki senyawa aktif seperti sinensetin yang berpotensi menurunkan kadar gula darah.
-                """)
-                st.markdown("[🔗 Baca artikel ilmiah](https://scholar.google.com)")
-                st.markdown("[📖 Panduan pengolahan herbal](https://id.wikipedia.org/wiki/Kumis_kucing)")
+            # =========================
+            # HASIL IDENTIFIKASI
+            # =========================
+            st.success("✅ Hasil Identifikasi")
+            col1, col2 = st.columns([1, 2])
 
-    with col2:
-        st.markdown("#### Tips Pengambilan Gambar")
-        st.write("""
-        - Gunakan pencahayaan alami.
-        - Pastikan daun tampak utuh.
-        - Hindari bayangan atau latar belakang gelap.
-        - Gunakan resolusi tinggi agar fitur daun terlihat jelas.
-        """)
+            with col1:
+                st.image(image_data, width=150)
+            with col2:
+                st.markdown(f"**Nama Ilmiah:** *{predicted_label}*")
+                st.markdown(f"**Tingkat Kepercayaan Sistem:** {confidence:.2f}%")
 
-        st.markdown("#### Contoh Gambar yang Disarankan")
-        st.image([
-            "https://upload.wikimedia.org/wikipedia/commons/6/6f/Kumis_kucing_leaf.jpg",
-            "https://upload.wikimedia.org/wikipedia/commons/3/3d/Curcuma_xanthorrhiza_leaf.jpg",
-            "https://upload.wikimedia.org/wikipedia/commons/7/7f/Centella_asiatica_leaves.jpg"
-        ], caption=["Kumis Kucing", "Temulawak", "Pegagan"], width=100)
+            # Contoh tambahan informasi (opsional)
+            st.subheader("Informasi Tambahan")
+            st.write("Jika tanaman ini termasuk herbal antidiabetes, berikut referensi yang relevan:")
 
-# ==============================
+            st.markdown("""
+            - 🔗 [Artikel Penelitian Terkait](https://scholar.google.com/)
+            - 🔗 [Referensi Penggunaan Tradisional](https://id.wikipedia.org/)
+            - 🔗 [Panduan Pengolahan Herbal](https://example.com)
+            """)
+
+# ====================================
 # FOOTER
-# ==============================
-st.markdown("---")
-st.markdown("<p style='text-align:center; font-size:14px;'>© 2025 Sistem Klasifikasi Tanaman Herbal Antidiabetes | Dibangun dengan Streamlit</p>", unsafe_allow_html=True)
+# ====================================
+st.divider()
+st.markdown(
+    "<p style='text-align:center; color:gray;'>© 2025 Sistem Klasifikasi Tanaman Herbal Antidiabetes | Dibangun dengan Streamlit</p>",
+    unsafe_allow_html=True
+)
