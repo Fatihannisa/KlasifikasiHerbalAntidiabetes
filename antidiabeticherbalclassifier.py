@@ -1,122 +1,73 @@
 import streamlit as st
+import tensorflow as tf
 import numpy as np
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 from PIL import Image
 
-# ====================================
-# KONFIGURASI AWAL
-# ====================================
-st.set_page_config(page_title="Klasifikasi Tanaman Herbal Antidiabetes", layout="centered")
+st.set_page_config(page_title="Klasifikasi Tanaman Herbal", layout="centered")
 
-# Muat model
+# ======================
+# Bagian Header
+# ======================
+st.title("🌿 Sistem Deteksi Tanaman Herbal Antidiabetes")
+st.write("Unggah gambar daun herbal untuk diidentifikasi jenisnya menggunakan model AI khusus.")
+
+# ======================
+# Fungsi Load & Prediksi
+# ======================
 @st.cache_resource
-def load_herbal_model():
-    model = load_model("model_herbal_antidiabetes.h5")  # ganti dengan nama file kamu
-    return model
+def load_tflite_model(model_path):
+    interpreter = tf.lite.Interpreter(model_path=model_path)
+    interpreter.allocate_tensors()
+    return interpreter
 
-model = load_herbal_model()
+def predict_tflite(interpreter, image):
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
 
-# Label kelas
-CLASS_NAMES = [
-    "Daun Sirsak", "Daun Salam", "Daun Pegagan", "Daun Jati Belanda",
-    "Daun Sirih", "Daun Kemangi", "Daun Insulin", "Daun Kelor",
-    "Daun Mangga", "Daun Belimbing Wuluh", "Daun Afrika", "Daun Brotowali",
-    "Daun Tapak Dara", "Daun Katuk", "Daun Dewa", "Daun Mengkudu",
-    "Daun Pandan", "Daun Tempuyung", "Daun Lidah Buaya", "Daun Seledri"
-]
+    # Preprocessing gambar sesuai ukuran model
+    img = image.resize((224, 224))  # ubah jika ukuran input berbeda
+    img_array = np.expand_dims(np.array(img) / 255.0, axis=0).astype(np.float32)
 
-# ====================================
-# HEADER
-# ====================================
-st.markdown("## 🌿 Klasifikasi Tanaman Herbal Antidiabetes")
-st.markdown("Sistem deteksi tanaman herbal berbasis citra daun menggunakan model **LeafNet dengan Transfer Learning**.")
+    # Set input dan jalankan inferensi
+    interpreter.set_tensor(input_details[0]['index'], img_array)
+    interpreter.invoke()
+    predictions = interpreter.get_tensor(output_details[0]['index'])[0]
+    return predictions
 
-st.divider()
+# ======================
+# Load Model
+# ======================
+MODEL_PATH = "leafnet_model.tflite"
+interpreter = load_tflite_model(MODEL_PATH)
 
-# ====================================
-# TAB NAVIGASI
-# ====================================
-tab1, tab2, tab3 = st.tabs(["🧾 Deskripsi", "📘 Petunjuk", "📷 Unggah Gambar"])
+# ======================
+# Upload Gambar
+# ======================
+uploaded_file = st.file_uploader("📸 Unggah gambar daun (format .jpg/.png)", type=["jpg", "png", "jpeg"])
 
-# =========================
-# TAB 1 – DESKRIPSI SISTEM
-# =========================
-with tab1:
-    st.subheader("Deskripsi Sistem")
-    st.write("""
-    Sistem ini digunakan untuk mengidentifikasi jenis tanaman herbal antidiabetes berdasarkan citra daun.
-    Model dilatih menggunakan pendekatan **Transfer Learning** dengan arsitektur khusus **LeafNet**.
-    """)
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Gambar yang diunggah", use_container_width=True)
 
-# =========================
-# TAB 2 – PETUNJUK
-# =========================
-with tab2:
-    st.subheader("Petunjuk Penggunaan")
-    st.write("1️⃣ Unggah gambar daun herbal (format JPG/PNG).")  
-    st.write("2️⃣ Tekan tombol **Identifikasi**.")  
-    st.write("3️⃣ Hasil klasifikasi dan tingkat kepercayaan sistem akan muncul di bawah.")  
+    if st.button("🔍 Identifikasi"):
+        with st.spinner("Sedang menganalisis gambar..."):
+            preds = predict_tflite(interpreter, image)
 
-    st.info("""
-    **Tips Pengambilan Gambar:**
-    - Pastikan daun berada di latar belakang polos.
-    - Hindari bayangan atau cahaya berlebih.
-    - Fokuskan kamera pada daun secara keseluruhan.
-    """)
+            # Misalnya ada 20 kelas daun herbal
+            classes = [
+                "Daun Salam", "Daun Sambiloto", "Daun Kelor", "Daun Sirih", "Daun Pegagan",
+                "Daun Katuk", "Daun Jambu Biji", "Daun Afrika", "Daun Insulin", "Daun Tempuyung",
+                "Daun Mengkudu", "Daun Pandan", "Daun Serai", "Daun Kemangi", "Daun Lidah Buaya",
+                "Daun Binahong", "Daun Beluntas", "Daun Pepaya", "Daun Pare", "Daun Mengkudu"
+            ]
 
-# =========================
-# TAB 3 – UNGGAH & HASIL
-# =========================
-with tab3:
-    st.subheader("Unggah Gambar")
-    uploaded_file = st.file_uploader("Unggah gambar daun (JPG/PNG)", type=["jpg", "jpeg", "png"])
+            pred_idx = np.argmax(preds)
+            confidence = preds[pred_idx] * 100
 
-    if uploaded_file is not None:
-        image_data = Image.open(uploaded_file).convert("RGB")
-        st.image(image_data, caption="Gambar yang diunggah", use_container_width=True)
+            st.success(f"🌱 Jenis daun terdeteksi: **{classes[pred_idx]}** ({confidence:.2f}%)")
 
-        if st.button("🔍 Identifikasi"):
-            with st.spinner("Sedang menganalisis gambar..."):
-                # Preprocessing gambar
-                img = image_data.resize((224, 224))
-                img_array = image.img_to_array(img)
-                img_array = np.expand_dims(img_array, axis=0)
-                img_array /= 255.0
-
-                # Prediksi
-                predictions = model.predict(img_array)
-                class_index = np.argmax(predictions[0])
-                confidence = predictions[0][class_index] * 100
-                predicted_label = CLASS_NAMES[class_index]
-
-            # =========================
-            # HASIL IDENTIFIKASI
-            # =========================
-            st.success("✅ Hasil Identifikasi")
-            col1, col2 = st.columns([1, 2])
-
-            with col1:
-                st.image(image_data, width=150)
-            with col2:
-                st.markdown(f"**Nama Ilmiah:** *{predicted_label}*")
-                st.markdown(f"**Tingkat Kepercayaan Sistem:** {confidence:.2f}%")
-
-            # Contoh tambahan informasi (opsional)
-            st.subheader("Informasi Tambahan")
-            st.write("Jika tanaman ini termasuk herbal antidiabetes, berikut referensi yang relevan:")
-
-            st.markdown("""
-            - 🔗 [Artikel Penelitian Terkait](https://scholar.google.com/)
-            - 🔗 [Referensi Penggunaan Tradisional](https://id.wikipedia.org/)
-            - 🔗 [Panduan Pengolahan Herbal](https://example.com)
-            """)
-
-# ====================================
-# FOOTER
-# ====================================
-st.divider()
-st.markdown(
-    "<p style='text-align:center; color:gray;'>© 2025 Sistem Klasifikasi Tanaman Herbal Antidiabetes | Dibangun dengan Streamlit</p>",
-    unsafe_allow_html=True
-)
+# ======================
+# Footer
+# ======================
+st.markdown("---")
+st.caption("© 2025 Sistem Klasifikasi Tanaman Herbal Antidiabetes | Dibangun dengan Streamlit")
