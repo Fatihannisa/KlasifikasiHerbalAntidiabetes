@@ -1,200 +1,113 @@
 import streamlit as st
-from PIL import Image
-import base64
 
-# --- Konfigurasi halaman ---
-st.set_page_config(page_title="DiaHerb", page_icon="🌿", layout="wide")
+# ==============================
+# KONFIGURASI DASAR HALAMAN
+# ==============================
+st.set_page_config(
+    page_title="Klasifikasi Tanaman Herbal Antidiabetes",
+    layout="wide",
+    page_icon="🌿"
+)
 
-# --- CSS Kustom ---
-st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500&display=swap');
+# ==============================
+# HEADER / JUDUL WEBSITE
+# ==============================
+st.markdown("<h1 style='text-align:center;'>🌿 Sistem Klasifikasi Tanaman Herbal Antidiabetes 🌿</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Mengidentifikasi jenis tanaman herbal berdasarkan citra daun menggunakan teknologi kecerdasan buatan.</p>", unsafe_allow_html=True)
 
-    html, body, [class*="css"] {
-        font-family: 'Poppins', sans-serif;
-        background-color: #d6ffba;
-    }
+st.markdown("---")
 
-    /* Sidebar */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #d6f0ce 0%, #b6d7a8 100%);
-        color: #2E4E1F;
-        padding-top: 2rem;
-        border-right: 2px solid #e0e0e0;
-    }
+# ==============================
+# NAVIGASI TAB
+# ==============================
+tab1, tab2, tab3 = st.tabs(["📘 Deskripsi", "🪴 Petunjuk", "📷 Unggah Gambar"])
 
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-        font-family: 'Playfair Display', serif;
-        color: #2E4E1F;
-        text-align: center;
-    }
+# ==============================
+# TAB 1: DESKRIPSI
+# ==============================
+with tab1:
+    st.subheader("Deskripsi Sistem")
+    st.write("""
+    Sistem ini dikembangkan untuk membantu pengguna mengenali tanaman herbal antidiabetes melalui citra daun.
+    Dengan memanfaatkan model *Transfer Learning* dan arsitektur *LeafNet*, sistem dapat mengklasifikasikan
+    citra daun dan menampilkan informasi tambahan mengenai tanaman yang terdeteksi.
+    """)
 
-    /* Logo Judul di Sidebar */
-    .logo-text {
-        font-family: 'Playfair Display', serif;
-        font-size: 30px;
-        color: #2E4E1F;
-        text-align: center;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-    }
+    st.markdown("### Tujuan")
+    st.write("- Mempermudah identifikasi tanaman herbal antidiabetes secara cepat dan akurat.")
+    st.write("- Menyediakan informasi ilmiah dan edukatif bagi pengguna.")
 
-    .subtext {
-        font-size: 16px;
-        color: #3b5323;
-        text-align: left;
-    }
+    st.markdown("### Manfaat")
+    st.write("- Mendukung penelitian dan konservasi tanaman herbal lokal.")
+    st.write("- Memberikan panduan pengenalan herbal untuk masyarakat umum dan praktisi kesehatan alami.")
 
-    /* Tombol navigasi */
-    .sidebar-radio label {
-        font-size: 16px;
-        color: #2E4E1F;
-        padding: 8px 12px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+# ==============================
+# TAB 2: PETUNJUK
+# ==============================
+with tab2:
+    st.subheader("Petunjuk Penggunaan")
 
-    .sidebar-radio label:hover {
-        background-color: #dfffba;
-        transition: 0.3s;
-    }
-
-    /* Header Section */
-    .header {
-        font-family: 'Playfair Display', serif;
-        color: #2E4E1F;
-        font-size: 60px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    /* Tombol kenali di tengah */
-    div.stButton > button {
-        display: block;
-        margin: 0 auto;
-        background-color: #8B5E3C;
-        color: white;
-        border-radius: 10px;
-        font-weight: bold;
-        transition: all 0.2s ease;
-    }
-    div.stButton > button:hover {
-        background-color: #bfe8a0;
-        transform: scale(1.05);
-    }
-
-    .tips-box {
-        background-color: #f7f1e1;
-        border-left: 4px solid #a18d58;
-        border-radius: 10px;
-        padding: 15px;
-    }
-
-    .footer {
-        text-align: center;
-        color: #6B705C;
-        font-size: 13px;
-        padding-top: 1rem;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
-# --- Sidebar Navigasi ---
-with st.sidebar:
-    st.markdown("<div class='logo-text'>DiaHerb</div>", unsafe_allow_html=True)
-    st.markdown("---")
-
-    menu = st.radio("Navigasi", ["🏠 Beranda", "ℹ️ Tentang", "📚 Referensi"], label_visibility="collapsed")
-
-    st.markdown("---")
-    st.markdown("<small>© 2025 DiaHerb</small>", unsafe_allow_html=True)
-    st.markdown("<small>Proyek Skripsi — Listy Zulmi</small>", unsafe_allow_html=True)
-
-
-# --- Halaman Utama ---
-if menu == "🏠 Beranda":
-    st.markdown("<div class='header'>🌿DiaHerb</div>", unsafe_allow_html=True)
-    st.markdown("<div class='subtext'>Sistem Klasifikasi Tanaman Herbal Antidiabetes Berbasis Deep Learning</div>", unsafe_allow_html=True)
-    st.write("Unggah citra daun untuk mengidentifikasi apakah tanaman tersebut termasuk herbal antidiabetes.")
-
-    col1, col2 = st.columns([2, 1])
-
+    col1, col2, col3 = st.columns(3)
     with col1:
-        uploaded_file = st.file_uploader("📷 Unggah gambar daun (JPG / PNG)", type=["jpg", "png", "jpeg"])
-        
-        if uploaded_file is not None:
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Gambar yang diunggah", use_container_width=True)
-            st.success("✅ Gambar berhasil diunggah!")
-
-        if st.button("🔍 Kenali"):
-            if "uploaded_file" in st.session_state:
-                with st.spinner("🔬 Sedang menganalisis gambar... (simulasi)"):
-                    st.image(st.session_state.uploaded_file) = {
-                        "nama_tanaman": "Daun Sambiloto (Andrographis paniculata)",
-                        "kemungkinan": "98.3%",
-                        "kategori": "Herbal Antidiabetes"
-                    }
-            else:
-                st.warning("Silakan unggah gambar terlebih dahulu sebelum mengidentifikasi.")
+        st.image("https://cdn-icons-png.flaticon.com/512/685/685655.png", width=80)
+        st.caption("1️⃣ Unggah gambar daun tanaman")
 
     with col2:
-        st.markdown("""
-        <div class='tips-box'>
-        <h4>📸 Tips Pengambilan Gambar</h4>
-        <ul>
-            <li>Ambil satu daun saja, fokus pada objek.</li>
-            <li>Gunakan latar belakang polos (putih atau hitam).</li>
-            <li>Pencahayaan cukup dan hindari bayangan.</li>
-        </ul>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Hasil identifikasi (tampil kalau sudah ada)
-        if "uploaded_image" in st.session_state:
-            hasil = st.session_state["uploaded_image"]
-            st.markdown("### 🌱 Hasil Identifikasi")
-            st.image(st.session_state["uploaded_image"], caption="Citra hasil identifikasi", use_container_width=True)
-            st.markdown(f"""
-            <div class="hasil-box">
-                <h4>Nama Tanaman: {hasil['nama_tanaman']}</h4>
-                <p><b>Kemungkinan:</b> {hasil['kemungkinan']}</p>
-                <p><b>Kategori:</b> {hasil['kategori']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.image("https://cdn-icons-png.flaticon.com/512/992/992651.png", width=80)
+        st.caption("2️⃣ Tekan tombol **Identifikasi**")
 
-elif menu == "ℹ️ Tentang":
-    st.markdown("<div class='header'>Tentang — DiaHerb</div>", unsafe_allow_html=True)
-    st.write("""
-    **DiaHerb** adalah sistem berbasis *Deep Learning* yang dirancang untuk membantu identifikasi tanaman herbal antidiabetes melalui citra daun.  
-    Sistem ini bertujuan untuk mendukung masyarakat, peneliti, dan pelaku industri herbal dalam mengenali tanaman berpotensi antidiabetes dengan lebih cepat dan akurat.
+    with col3:
+        st.image("https://cdn-icons-png.flaticon.com/512/3131/3131636.png", width=80)
+        st.caption("3️⃣ Lihat hasil klasifikasi dan informasi tanaman")
 
-    ### 🎯 Tujuan
-    - Mengidentifikasi tanaman herbal antidiabetes berdasarkan citra daun.  
-    - Meningkatkan kesadaran masyarakat tentang potensi tanaman lokal.  
-    - Mendukung penelitian dan pengembangan obat herbal.
+# ==============================
+# TAB 3: UNGGAH GAMBAR & HASIL
+# ==============================
+with tab3:
+    st.subheader("Unggah Gambar Daun Anda")
 
-    ### 🌿 Manfaat
-    - Alternatif identifikasi berbasis AI.  
-    - Hemat waktu dalam proses pengenalan tanaman.  
-    - Dapat digunakan di lapangan oleh siapa saja.
+    col1, col2 = st.columns([1.5, 1])
+    with col1:
+        uploaded_file = st.file_uploader("Unggah gambar daun (JPG/PNG)", type=["jpg", "png"])
+        if uploaded_file is not None:
+            st.image(uploaded_file, caption="Citra daun yang diunggah", use_column_width=True)
 
-    ### ⚙️ Cara Kerja Sistem
-    - Gambar daun diunggah ke sistem.
-    - Model *Transfer Learning* menganalisis ciri morfologi daun.
-    - Sistem menampilkan hasil identifikasi, status herbal, dan tingkat kepercayaannya.
-    """)
+        # Tombol Identifikasi
+        if st.button("🔍 Identifikasi", use_container_width=True):
+            st.info("Model sedang memproses gambar...")
 
-elif menu == "📚 Referensi":
-    st.markdown("<div class='header'>Referensi Ilmiah</div>", unsafe_allow_html=True)
-    st.write("""
-    1. Hossain, M. A., et al. (2022). *LeafNet: A Deep CNN Model for Plant Identification.*  
-    2. Gupta, R. et al. (2023). *Transfer Learning for Medicinal Leaf Classification.*  
-    3. Kumar, A. & Singh, R. (2021). *AI-Based Herbal Plant Identification Using ImageNet Pretraining.*  
-    4. Listy Zulmi (2025). *Implementasi Model LeafNet untuk Klasifikasi Tanaman Herbal Antidiabetes Berdasarkan Citra Daun.* Skripsi, Universitas Anda.
-    """)
+            # === Proses klasifikasi model di sini ===
+            # contoh dummy output:
+            st.success("✅ Tanaman teridentifikasi: *Orthosiphon aristatus* (Kumis Kucing)")
+            st.write("**Status:** Herbal Antidiabetes")
+            st.write("**Tingkat kepercayaan sistem:** 94.3%")
 
-st.markdown("<div class='footer'>© 2025 DiaHerb | Sistem Klasifikasi Tanaman Herbal Antidiabetes</div>", unsafe_allow_html=True)
+            with st.expander("Informasi Tambahan"):
+                st.markdown("""
+                - Tanaman ini dikenal sebagai *Kumis Kucing*.
+                - Memiliki senyawa aktif seperti sinensetin yang berpotensi menurunkan kadar gula darah.
+                """)
+                st.markdown("[🔗 Baca artikel ilmiah](https://scholar.google.com)")
+                st.markdown("[📖 Panduan pengolahan herbal](https://id.wikipedia.org/wiki/Kumis_kucing)")
+
+    with col2:
+        st.markdown("#### Tips Pengambilan Gambar")
+        st.write("""
+        - Gunakan pencahayaan alami.
+        - Pastikan daun tampak utuh.
+        - Hindari bayangan atau latar belakang gelap.
+        - Gunakan resolusi tinggi agar fitur daun terlihat jelas.
+        """)
+
+        st.markdown("#### Contoh Gambar yang Disarankan")
+        st.image([
+            "https://upload.wikimedia.org/wikipedia/commons/6/6f/Kumis_kucing_leaf.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/3/3d/Curcuma_xanthorrhiza_leaf.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/7/7f/Centella_asiatica_leaves.jpg"
+        ], caption=["Kumis Kucing", "Temulawak", "Pegagan"], width=100)
+
+# ==============================
+# FOOTER
+# ==============================
+st.markdown("---")
+st.markdown("<p style='text-align:center; font-size:14px;'>© 2025 Sistem Klasifikasi Tanaman Herbal Antidiabetes | Dibangun dengan Streamlit</p>", unsafe_allow_html=True)
